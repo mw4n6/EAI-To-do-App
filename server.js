@@ -1,7 +1,7 @@
 //server.js
 
   /*  set up  */
-  
+  console.log("Starting!");
   var express  = require('express');
   var app      = express();
   var mongoose = require('mongoose'); 
@@ -21,5 +21,5 @@
   
   /*  listen  */
   
-  app.use(methodOverride());
+  app.listen(8080);
   console.log("To do app listening on port 8080");
