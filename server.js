@@ -11,7 +11,7 @@
   
   /*  configuration */
   
-  mongoose.connect('mongodb://apollo.modulusmongo.net:27017/Va8xipyn');
+  mongoose.connect('mongodb://admin:admin@ds035740.mongolab.com:35740/mw_test');
   app.use(express.static(__dirname + '/public'));
   app.use(morgan('dev')); 
   app.use(bodyParser.urlencoded({'extended':'true'}));
@@ -29,25 +29,29 @@
   
   //get all todos
   app.get('/api/todos', function(req, res) {
+    console.log("I am getting all todos");
     Todo.find(function(err, todos) {
+      console.log("I am sending todos", todos);
       if (err)  res.send(err);
-      
-      res.json(todos);
+      else res.json(todos);
     });
   });
   
   //create a todo
   app.post('/api/todos', function(req, res) {
+    console.log('creating a todo');
     Todo.create({
       text : req.body.text,
       done : false
     }, function(err, todo){
-      if (err) res.send(err);
-      
-      Todo.find(function(err, todos) {
-        if (err) res.send(err);
-        res.json(todos);
-      });
+      if (err) res.send(err)
+      else
+      {
+        Todo.find(function(err, todos) {
+          if (err) res.send(err);
+          res.json(todos);
+        });
+      }
     });
   });
   
@@ -56,15 +60,23 @@
     Todo.remove({
       _id : req.params.todo_id
     }, function(err, todo) {
-      if (err)  res.send(err);
-      
-      Todo.find(function(err, todos) {
-        if (err)  res.send(err);
-        res.json(todos);
-      });
+      if (err)  res.send(err)
+      else{
+        Todo.find(function(err, todos) {
+          if (err)  res.send(err);
+          res.json(todos);
+        });
+      }
     });
   });
-  /*  listen  */
   
+  /*  application */
+  
+  app.get('*', function(req, res) {
+    res.sendfile('./public/index.html');
+  });
+  
+  /*  listen  */
+  app.listen(process.env.PORT)
   app.listen(8080);
   console.log("To do app listening on port 8080");
