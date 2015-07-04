@@ -22,15 +22,18 @@
   /*  define model  */
   
   var Todo = mongoose.model('Todo', {
-    text : String
+    text  : String ,
+    user  : String
   });
   
   /*  routes  */
   
   //get all todos
-  app.get('/api/todos', function(req, res) {
-    console.log("I am getting all todos");
-    Todo.find(function(err, todos) {
+  app.post('/api/todos_for_user', function(req, res) {
+    console.log("I am getting all todos from req :", req.body);
+    Todo
+    .find({user: req.body.user})
+    .find(function(err, todos) {
       console.log("I am sending todos", todos);
       if (err)  res.send(err);
       else res.json(todos);
@@ -39,15 +42,18 @@
   
   //create a todo
   app.post('/api/todos', function(req, res) {
-    console.log('creating a todo');
+    console.log('creating a todo from req :', req.body);
     Todo.create({
       text : req.body.text,
+      user : req.body.user,
       done : false
     }, function(err, todo){
       if (err) res.send(err)
       else
       {
-        Todo.find(function(err, todos) {
+        Todo
+        .find({user: req.body.user})
+        .find(function(err, todos) {
           if (err) res.send(err);
           res.json(todos);
         });
@@ -57,17 +63,26 @@
   
   //delete a todo
   app.delete('/api/todos/:todo_id', function(req, res) {
-    Todo.remove({
-      _id : req.params.todo_id
-    }, function(err, todo) {
+    Todo
+    .findOne({_id : req.params.todo_id}, function(err, todo){
+      var thistodo = todo;
+      console.log("todo is: ", thistodo);
       if (err)  res.send(err)
-      else{
-        Todo.find(function(err, todos) {
-          if (err)  res.send(err);
-          res.json(todos);
-        });
-      }
+      Todo.remove({
+        _id : req.params.todo_id
+      }, function(err, todo) {
+        if (err)  res.send(err)
+        else{
+          Todo
+          .find({user: thistodo.user})
+          .find(function(err, todos) {
+            if (err)  res.send(err);
+            res.json(todos);
+          });
+        }
+      });
     });
+    
   });
   
   /*  application */
