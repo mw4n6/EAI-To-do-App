@@ -6,6 +6,7 @@ Todo.controller('mainController', ['$scope', '$http', function($scope, $http){
   $scope.formData = {};
   $scope.todos = {};
   $scope.showCompleted = false;
+  $scope.submitting = false;
   $scope.users = [
     {
       userName  : "jcheng",
@@ -39,6 +40,13 @@ Todo.controller('mainController', ['$scope', '$http', function($scope, $http){
   
   
   $scope.createTodo = function() {
+    if(
+      ($scope.submitting)
+      ||
+      (!$scope.formData.text)
+    ) 
+    return;
+    $scope.submitting = true;
     $http.post('/api/todos', {
       text :  $scope.formData.text,
       user :  $scope.currentUser
@@ -47,10 +55,45 @@ Todo.controller('mainController', ['$scope', '$http', function($scope, $http){
         $scope.formData = {};
         $scope.todos = data;
         console.log(data);
+        $scope.submitting = false;
       })
       .error(function(data) {
         console.log('Error: ' + data);
       });
+  };
+  
+  $scope.completedTodo = function(id){
+    $http.post('/api/complete_todo/' + id)
+    .success(function(data){
+      $scope.todos=data;
+      console.log(data);
+    })
+    .error(function(data){
+      console.log('Error: ' + data);
+    });
+  };
+  
+  $scope.unCompleteTodo = function(id){
+    $http.post('/api/uncomplete_todo/' + id)
+    .success(function(data){
+      $scope.todos=data;
+      console.log(data);
+    })
+    .error(function(data){
+      console.log('Error: ' + data);
+    });
+  };
+  
+  $scope.clickTodo = function(todo){
+    console.log("Todo is :", todo, todo.done);
+    if(!todo.done)
+    {
+      $scope.completedTodo(todo._id);
+    }
+    else
+    {
+      $scope.unCompleteTodo(todo._id);
+    }
   };
   
   $scope.deleteTodo = function(id) {
