@@ -22,8 +22,9 @@
   /*  define model  */
   
   var Todo = mongoose.model('Todo', {
-    text  : String ,
-    user  : String
+    text  : String,
+    user  : String,
+    done : Boolean
   });
   
   /*  routes  */
@@ -58,6 +59,44 @@
           res.json(todos);
         });
       }
+    });
+  });
+  
+  //complete a todo
+  app.post('/api/complete_todo/:todo_id', function(req, res){
+    Todo.findById(req.params.todo_id, function(err, todo){
+      if(err) res.send(err);
+      
+      todo.done = true;
+      todo.save(function(err){
+        if(err) res.send(err);
+        
+        Todo
+        .find({user: todo.user})
+        .find(function(err, todos) {
+          if (err)  res.send(err);
+          res.json(todos);
+        });
+      });
+    });
+  });
+  
+  //uncomplete a todo
+  app.post('/api/uncomplete_todo/:todo_id', function(req, res){
+    Todo.findById(req.params.todo_id, function(err, todo){
+      if(err) res.send(err);
+      
+      todo.done = false;
+      todo.save(function(err){
+        if(err) res.send(err);
+        
+        Todo
+        .find({user: todo.user})
+        .find(function(err, todos) {
+          if (err)  res.send(err);
+          res.json(todos);
+        });
+      });
     });
   });
   
