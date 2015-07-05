@@ -37,7 +37,18 @@ Todo.controller('mainController', ['$scope', '$http', function($scope, $http){
   
   getTodosForCurrentUser();
   
-  
+  $scope.countUnCompleted = function(){
+    count = 0;
+    
+    $.each($scope.todos, function(index, todo){
+      if(!todo.done)
+      {
+        count++;
+      }
+    });
+    
+    return count;
+  };
   
   $scope.createTodo = function() {
     if(
