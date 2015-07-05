@@ -13,6 +13,7 @@
       html                    { overflow-y:scroll; }
       body                    { padding-top:50px; }
       #todo-list              { margin-bottom:30px; }
+      
     </style>
     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -22,10 +23,18 @@
   
   <body ng-controller="mainController">
     <div class="container">
-      <div>
+      <div style="
+        background-color: #d5d5d5; 
+        padding-top: 10px;
+        border-top-left-radius: 6px; 
+        border-top-right-radius: 6px;
+      ">
         <select 
           ng-model="currentUser"
           ng-options="user.userName as user.fullName for user in users"
+          style= "
+            
+          "
         >
           <!--<option 
             
@@ -34,29 +43,45 @@
           </option>-->
         </select>
       </div>
-      <div class="jumbotron text-center">
-        <h1>I'm a Todo-aholic <span class="label label-info">{{ todos.length }}</span></h1>
+      <div class="jumbotron" style="
+        border-top-left-radius: 0px; 
+        border-top-right-radius: 0px;
+        margin-bottom: 10px;
+      ">
+        <h1 class="text-center">
+          I'm a Todo-aholic 
+          <span class="label label-info">{{countUnCompleted()}}</span>
+        </h1>
         
-        <div id="todo-form" class="row">
-          <!--<div class="col-sm-8 col-sm-offset-2 text-center">-->
+        <div id="todo-form" class="text-center" style = "margin-top: 50px;">
           <div class="text-center">
-            <form class="form-inline">
-              <div class="form-group">
-                <input type="text" class="form-control input-lg text-center" placeholder="New Todo" ng-model="formData.text">
+            <form class="form-horizontal">
+              <div class="form-group" style = "margin-left:-5px;margin-right:-5px">
+                <input type="text" class="form-control input-lg text-center" style = "padding-left: 0px; padding-right: 0px;" placeholder="New Todo" ng-model="formData.text">
               </div>
               <button 
                 type="submit" 
-                class="btn btn-primary btn-lg" 
+                class="btn btn-primary btn-block" 
                 ng-class="{submitting : btn-info-disabled}"
                 ng-click="createTodo()"
+                style = "display: none;"
               >Add</button>
             </form>
           </div>
+          
+          <div class="form-group text-left" style = "font-size: 14px; line-height:1.428571429">
+            <div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="showCompleted">Show Completed</input>
+                </label>
+              </div>
+            </div>
+            
+          </div>
         </div>
         
-        <div>
-          <input type="checkbox" ng-model="showCompleted">Show Completed</input>
-        </div>
+        
       </div>
       
       
@@ -64,16 +89,31 @@
       
       
       <div id="todo-list" class="row">
-        <div class="col-sm-4 col-sm-offset-4">
+        <!--<div class="col-sm-4 col-sm-offset-4">-->
+        <div 
+          class="col-sm-offset-1"
+          style = "
+            line-height: 20px;
+            font-size: 20px;
+            margin-left: 5%
+          "
+        >
           <div class="checkbox" 
             ng-repeat="todo in todos"
             ng-show="(!todo.done)||(showCompleted)"
+            style = "
+              margin-top: 15px;
+            "
           >
             <label>
               <input 
                 type="checkbox" 
                 ng-click="clickTodo(todo)"
                 ng-checked="todo.done"
+                style = "
+                  vertical-align: middle;
+                  position: relative;
+                "
               > 
                 {{ todo.text }}
             </label>
