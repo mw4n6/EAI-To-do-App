@@ -22,6 +22,8 @@ Todo.controller('mainController', ['$scope', '$http', function($scope, $http){
     }
   ];
   $scope.currentUser = $scope.users[0].userName;
+  $scope.over = {};
+  $scope.over = {};
   
   var getTodosForCurrentUser = function(){
     console.log("getting todos for current user : ", $scope.currentUser);
@@ -48,6 +50,28 @@ Todo.controller('mainController', ['$scope', '$http', function($scope, $http){
     });
     
     return count;
+  };
+  
+  $scope.countCompleted = function(){
+    count = 0;
+    
+    $.each($scope.todos, function(index, todo){
+      if(todo.done)
+      {
+        count++;
+      }
+    });
+    
+    return count;
+  };
+  
+  $scope.mouseEnter = function(id){
+    $scope.over[id] = true;
+    console.log($scope.over);
+  };
+  
+  $scope.mouseLeave = function(id){
+    $scope.over[id] = false;
   };
   
   $scope.createTodo = function() {
